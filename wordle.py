@@ -1,5 +1,4 @@
 from collections import defaultdict
-import tqdm
 
 
 def read_dict(filename: str):
@@ -20,10 +19,19 @@ if __name__ == "__main__":
     wordlist = read_dict("dictionary.txt")
     scores = defaultdict(int)
 
-    for chosen in tqdm.tqdm(wordlist.keys()):
+    for i, chosen in enumerate(wordlist.keys()):
+
+        if i % 1000 == 0:
+            print(f"{i}/{len(wordlist)}")
 
         for guess in wordlist.keys():
             scores[guess] += len(guess.intersection(chosen))
 
-    for w in sorted(scores, key=scores.get, reverse=True):
-        print(f"{wordlist[w]}:{scores[w]}")
+    print("\nTop and bottom scoring words")
+
+    scores_sorted = sorted(scores, key=scores.get, reverse=True)
+    for w in scores_sorted[:15]:
+        print(f"{wordlist[w]}: {scores[w]}")
+    print("\n...\n")
+    for w in scores_sorted[-15:]:
+        print(f"{wordlist[w]}: {scores[w]}")
